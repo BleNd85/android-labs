@@ -26,12 +26,9 @@ public class MainActivity extends AppCompatActivity implements OnSelectedDataLis
 
         if (savedInstanceState == null) {
             inputFragment = new InputFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.input_fragment_container, inputFragment)
-                    .commit();
-
             outputFragment = new OutputFragment();
             getSupportFragmentManager().beginTransaction()
+                    .add(R.id.input_fragment_container, inputFragment)
                     .add(R.id.output_fragment_container, outputFragment)
                     .commit();
         }
