@@ -53,6 +53,12 @@ public class OutputFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onClearDataListener = null;
+    }
+
     public void updateData(String author, String year) {
         if (resultText != null && cancelButton != null) {
             resultText.setText("Автор: " + author + "\nРік: " + year);

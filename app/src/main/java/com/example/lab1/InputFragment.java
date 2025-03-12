@@ -61,6 +61,12 @@ public class InputFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onSelectedDataListener = null;
+    }
+
     public void clearForm() {
         if (yearRadioGroup != null) {
             yearRadioGroup.clearCheck();
