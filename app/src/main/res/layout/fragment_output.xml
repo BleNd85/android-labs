@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <FrameLayout
-        android:id="@+id/input_fragment_container"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:textSize="18sp" />
 
-    <FrameLayout
-        android:id="@+id/output_fragment_container"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
-
+        android:backgroundTint="@color/light_brown"
+        android:text="@string/cancel" />
 </LinearLayout>

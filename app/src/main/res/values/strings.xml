@@ -5,7 +5,8 @@
     <string name="_2023">2023</string>
     <string name="_2024">2024</string>
     <string name="_2025">2025</string>
-    <string name="submit">Підтвердити</string>
+    <string name="submit">OK</string>
+    <string name="cancel">Cancel</string>
     <string-array name="authors_array">
         <item>Жан Рено</item>
         <item>Елінор Каттон</item>
