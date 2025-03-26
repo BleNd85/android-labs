@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +47,7 @@ public class DataBaseFragment extends Fragment {
         Button updateButton = view.findViewById(R.id.update_button);
 
         deleteButton.setOnClickListener(v -> deleteItem());
+        updateButton.setOnClickListener(v -> updateItem());
 
     }
 
@@ -86,8 +90,47 @@ public class DataBaseFragment extends Fragment {
         }
     }
 
-    //TODO update
     private void updateItem() {
 
+        try {
+            int id = Integer.parseInt(editId.getText().toString());
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            LayoutInflater inflater = requireActivity().getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.update_dialog, null);
+            builder.setView(dialogView);
+
+            RadioGroup yearRadioGroup = dialogView.findViewById(R.id.yearRadioGroup);
+            Spinner bookSpinner = dialogView.findViewById(R.id.books_spinner);
+
+            builder.setTitle("Update Book")
+                    .setPositiveButton("Update", (dialog, which) -> {
+                        int selectedId = yearRadioGroup.getCheckedRadioButtonId();
+                        if (selectedId == -1) {
+                            Toast.makeText(getContext(), "Select a year", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        RadioButton selectedButton = dialogView.findViewById(selectedId);
+                        String selectedYear = selectedButton.getText().toString();
+                        String selectedAuthor = bookSpinner.getSelectedItem().toString();
+
+                        int updatedRows = dbListener.updateById(id, selectedYear, selectedAuthor);
+                        if (updatedRows > 0) {
+                            Toast.makeText(getContext(), "Book with id: " + id + " was successfully updated!", Toast.LENGTH_SHORT).show();
+                            editId.setText("");
+                            loadList();
+                        } else {
+                            Toast.makeText(getContext(), "Book wit id " + id + " was not found!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+            builder.create().show();
+
+
+        } catch (NumberFormatException ignored) {
+            Toast.makeText(getContext(), "Enter id!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
