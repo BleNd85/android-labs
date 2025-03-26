@@ -2,43 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/result_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp" />
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/save_button"
+        <EditText
+            android:id="@+id/edit_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:backgroundTint="@color/light_brown"
-            android:text="@string/save" />
+            android:hint="@string/id_hint"
+            android:importantForAutofill="no"
+            android:inputType="number" />
 
         <Button
-            android:id="@+id/cancel_button"
+            android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:backgroundTint="@color/light_brown"
-            android:text="@string/cancel" />
+            android:text="@string/delete" />
+
+        <Button
+            android:id="@+id/update_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/light_brown"
+            android:text="@string/update" />
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/view_db_button"
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:backgroundTint="@color/light_brown"
-        android:text="@string/database" />
+        android:layout_gravity="center"
+        android:text="@string/no_books_message"
+        android:textSize="16sp" />
+
 
 </LinearLayout>

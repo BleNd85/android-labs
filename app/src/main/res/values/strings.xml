@@ -7,6 +7,12 @@
     <string name="_2025">2025</string>
     <string name="submit">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="database">Database</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="save">Save</string>
+    <string name="no_books_message">No books yet</string>
+    <string name="id_hint">ID</string>
     <string-array name="authors_array">
         <item>Жан Рено</item>
         <item>Елінор Каттон</item>
