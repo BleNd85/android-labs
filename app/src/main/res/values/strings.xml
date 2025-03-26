@@ -13,6 +13,7 @@
     <string name="save">Save</string>
     <string name="no_books_message">No books yet</string>
     <string name="id_hint">ID</string>
+    <string name="no_books_yet">No books yet</string>
     <string-array name="authors_array">
         <item>Жан Рено</item>
         <item>Елінор Каттон</item>

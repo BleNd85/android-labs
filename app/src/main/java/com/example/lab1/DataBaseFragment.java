@@ -14,6 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -54,20 +55,30 @@ public class DataBaseFragment extends Fragment {
     private void loadList() {
         if (dbListener != null) {
             Cursor cursor = dbListener.getAll();
-            SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-                    getActivity(),
-                    R.layout.list_item,
-                    cursor,
-                    new String[]{"_id", "author", "year"},
-                    new int[]{R.id.item_id, R.id.item_author, R.id.item_year},
-                    0
-            );
             ListView listView = requireView().findViewById(R.id.list_view);
-            listView.setAdapter(adapter);
+            TextView emptyTextView = requireView().findViewById(R.id.empty_view);
+
+            if (cursor != null && cursor.getCount() > 0) {
+                SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                        getActivity(),
+                        R.layout.list_item,
+                        cursor,
+                        new String[]{"_id", "author", "year"},
+                        new int[]{R.id.item_id, R.id.item_author, R.id.item_year},
+                        0
+                );
+                listView.setAdapter(adapter);
+                listView.setVisibility(View.VISIBLE);
+                emptyTextView.setVisibility(View.GONE);
+            } else {
+                listView.setVisibility(View.GONE);
+                emptyTextView.setVisibility(View.VISIBLE);
+            }
 
             listView.setOnItemClickListener(((parent, view, position, id) -> editId.setText(String.valueOf(id))));
         }
     }
+
 
     private void deleteItem() {
         try {
@@ -132,5 +143,11 @@ public class DataBaseFragment extends Fragment {
         } catch (NumberFormatException ignored) {
             Toast.makeText(getContext(), "Enter id!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        dbListener = null;
     }
 }

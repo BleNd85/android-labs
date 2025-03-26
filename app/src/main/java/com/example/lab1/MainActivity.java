@@ -13,7 +13,6 @@ public class MainActivity extends AppCompatActivity implements OnSelectedDataLis
 
     private OutputFragment outputFragment;
     private InputFragment inputFragment;
-
     private DataBaseHelper dbHelper;
 
     @Override

@@ -72,6 +72,7 @@ public class OutputFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         onClearDataListener = null;
+        onDatabaseListener = null;
     }
 
     public void updateData(String author, String year) {
