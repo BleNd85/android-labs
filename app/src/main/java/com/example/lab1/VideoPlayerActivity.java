@@ -1,5 +1,6 @@
 package com.example.lab1;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -107,6 +108,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
             } else {
                 showOverlay();
             }
+            updateTime();
         });
 
         pauseButton.setOnClickListener(v -> {
@@ -145,6 +147,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
             } else {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
+            if (!videoView.isPlaying()) videoView.pause();
         });
 
 
@@ -239,6 +242,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private String format(int ms) {
         int s = ms / 1000;
         int m = s / 60;

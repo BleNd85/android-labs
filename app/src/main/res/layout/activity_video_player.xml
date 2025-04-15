@@ -38,7 +38,9 @@
         android:layout_gravity="bottom"
         android:background="#80000000"
         android:orientation="vertical"
-        android:padding="@dimen/video_controls_padding">
+      android:padding="16dp"
+        android:paddingEnd="@dimen/video_controls_padding"
+        tools:ignore="RtlSymmetry">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,7 +97,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:thumbTint="@color/white"/>
 
             <TextView
                 android:id="@+id/duration_time_text"

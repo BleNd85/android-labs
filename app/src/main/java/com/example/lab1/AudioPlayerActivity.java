@@ -47,6 +47,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
         audioImage = findViewById(R.id.audio_image);
         seekBar = findViewById(R.id.audio_seek_bar);
         timeText = findViewById(R.id.time_text);
+        titleText = findViewById(R.id.audio_title_text);
         durationText = findViewById(R.id.duration_text);
         previousButton = findViewById(R.id.previous_btn);
         playButton = findViewById(R.id.play_btn);
@@ -131,8 +132,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
             }
         });
     }
+
     private void loadAudioAt(int index) {
-        // Release previous MediaPlayer resources
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
@@ -175,6 +176,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void updateTime() {
         if (mediaPlayer == null) return;
 
@@ -214,5 +216,27 @@ public class AudioPlayerActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            playButton.setImageResource(android.R.drawable.ic_media_play);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            mediaPlayer.release();
+            mediaPlayer = null;
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 }
