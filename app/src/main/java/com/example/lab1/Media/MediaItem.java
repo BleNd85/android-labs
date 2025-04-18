@@ -1,4 +1,4 @@
-package com.example.lab1;
+package com.example.lab1.Media;
 
 import android.graphics.Bitmap;
 
@@ -12,6 +12,10 @@ public class MediaItem {
         this.name = name;
         this.uri = uri;
         this.duration = duration;
+        this.thumbnail = thumbnail;
+    }
+
+    public void setThumbnail(Bitmap thumbnail) {
         this.thumbnail = thumbnail;
     }
 }

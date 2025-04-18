@@ -1,4 +1,4 @@
-package com.example.lab1;
+package com.example.lab1.Media;
 
 import android.view.View;
 import android.widget.TextView;
@@ -6,6 +6,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lab1.R;
 import com.google.android.material.imageview.ShapeableImageView;
 
 public class MediaViewHolder extends RecyclerView.ViewHolder {

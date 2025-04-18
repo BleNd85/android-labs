@@ -1,6 +1,7 @@
-package com.example.lab1;
+package com.example.lab1.Activity;
 
 import android.app.NotificationManager;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.RenderEffect;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.lab1.R;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -32,7 +35,6 @@ public class AudioPlayerActivity extends AppCompatActivity {
     private int currentIndex;
     private MediaPlayer mediaPlayer;
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private NotificationManager notificationManager;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -43,6 +45,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
             RenderEffect blur = RenderEffect.createBlurEffect(25f, 20f, Shader.TileMode.CLAMP);
             backgroundImage.setRenderEffect(blur);
         }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         audioImage = findViewById(R.id.audio_image);
         seekBar = findViewById(R.id.audio_seek_bar);
@@ -59,6 +62,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
         uriList = getIntent().getStringArrayListExtra("media_uri_list");
         nameList = getIntent().getStringArrayListExtra("media_name_list");
         currentIndex = getIntent().getIntExtra("media_index", 0);
+
 
         if (currentIndex >= uriList.size()) {
             currentIndex = 0;

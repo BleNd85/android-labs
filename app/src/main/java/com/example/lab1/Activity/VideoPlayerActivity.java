@@ -1,4 +1,4 @@
-package com.example.lab1;
+package com.example.lab1.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
@@ -22,6 +22,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
+
+import com.example.lab1.R;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.lab1;
+package com.example.lab1.Media;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.lab1.Activity.AudioPlayerActivity;
+import com.example.lab1.Activity.VideoPlayerActivity;
+import com.example.lab1.R;
 
 import java.util.ArrayList;
 import java.util.List;

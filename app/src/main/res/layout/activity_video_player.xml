@@ -98,7 +98,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:thumbTint="@color/white"/>
+                android:thumbTint="@color/white"
+                android:progressTint="#42719C"/>
 
             <TextView
                 android:id="@+id/duration_time_text"
