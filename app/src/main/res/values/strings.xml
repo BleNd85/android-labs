@@ -1,23 +1,11 @@
 <resources>
     <item name="app_name" type="string">Lab4</item>
-    <string name="filename">Filename</string>
-    <string name="time_duration">00:00</string>
-    <string name="video_name">Video name</string>
-    <string name="video_playtime">00:00</string>
-    <string name="video_duration">11:11</string>
-    <string name="previous_btn">Previous</string>
-    <string name="next_btn">Next</string>
-    <string name="pause_btn">Pause</string>
-    <string name="rotate_button">Rotate button</string>
-    <string name="media_image">Media image</string>
-    <string name="next_track_button">Next track button</string>
-    <string name="play_track_button">Play track button</string>
-    <string name="previous_track_button">Previous track button</string>
-    <string name="background">Background</string>
-    <string name="audio_title">Audio Title</string>
-    <string name="download">Download</string>
-    <string name="cancel">Cancel</string>
-    <string name="_0">0%</string>
-    <string name="enter_file_url">Enter file URL</string>
-    <string name="downloading">Downloading file...</string>
+    <string name="choose_date">Choose date</string>
+    <string name="steps_0">Steps: 0</string>
+    <string name="distance_0_m">Distance: 0 m</string>
+    <string name="calories_0">Calories: 0</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="_21_04_2025">21.04.2025</string>
 </resources>
