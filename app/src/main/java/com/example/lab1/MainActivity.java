@@ -8,7 +8,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.Button;
+import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,13 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private Calendar selectedDate;
     private BarChart barChart;
+    private ImageButton prevDateButton, nextDateButton;
     private TextView stepsView, distanceView, caloriesView, selectedDateView;
-    private Button buttonPickDate, buttonDay, buttonWeek, buttonMonth;
-
-    private enum Mode {DAY, WEEK, MONTH}
-
-    private Mode currentMode = Mode.DAY;
-    private float distancePerStep = 0.0008f;
+    private final float distancePerStep = 0.0008f;
     private float caloriesPerStep = 0.04f;
 
     private static final int REQUEST_ACTIVITY_RECOGNITION = 1001;
@@ -58,46 +55,56 @@ public class MainActivity extends AppCompatActivity {
 
         checkAndRequestPermissions();
 
-        Intent serviceIntent = new Intent(this, StepCounterService.class);
+        Intent serviceIntent = new Intent(this, StepService.class);
         ContextCompat.startForegroundService(this, serviceIntent);
 
         barChart = findViewById(R.id.barChart);
         stepsView = findViewById(R.id.stepsText);
         distanceView = findViewById(R.id.distanceText);
         caloriesView = findViewById(R.id.caloriesText);
-        buttonPickDate = findViewById(R.id.btnPickDate);
-
         selectedDateView = findViewById(R.id.selectedDateText);
-        buttonDay = findViewById(R.id.btnDay);
-        buttonWeek = findViewById(R.id.btnWeek);
-        buttonMonth = findViewById(R.id.btnMonth);
-
+        prevDateButton = findViewById(R.id.btnPrevDate);
+        nextDateButton = findViewById(R.id.btnNextDate);
         selectedDate = Calendar.getInstance();
-        updateDateDisplay();
 
-        buttonPickDate.setOnClickListener(v -> showDatePicker());
+        StepMarkerView marker = new StepMarkerView(this, R.layout.marker_view);
+        marker.setChartView(barChart);
+        barChart.setMarker(marker);
 
-        updateModeUI();
-        updateChartAndData();
+        databaseHelper = new DatabaseHelper(this);
+        updateUIForDate();
 
-        buttonDay.setOnClickListener(v -> {
-            currentMode = Mode.DAY;
-            updateModeUI();
-            updateChartAndData();
+        prevDateButton.setOnClickListener(v -> {
+            selectedDate.add(Calendar.DAY_OF_MONTH, -1);
+            updateUIForDate();
         });
 
-        buttonWeek.setOnClickListener(v -> {
-            currentMode = Mode.WEEK;
-            updateModeUI();
-            updateChartAndData();
+        nextDateButton.setOnClickListener(v -> {
+            Calendar todayCalendar = Calendar.getInstance();
+            if (selectedDate.before(todayCalendar)) {
+                selectedDate.add(Calendar.DAY_OF_MONTH, 1);
+                updateUIForDate();
+            }
         });
 
-        buttonMonth.setOnClickListener(v -> {
-            currentMode = Mode.MONTH;
-            updateModeUI();
-            updateChartAndData();
-        });
+        selectedDateView.setOnClickListener(v -> {
+            Calendar todayCalendar = Calendar.getInstance();
+            todayCalendar.set(Calendar.HOUR_OF_DAY, 23);
+            todayCalendar.set(Calendar.MINUTE, 59);
+            todayCalendar.set(Calendar.SECOND, 59);
+            todayCalendar.set(Calendar.MILLISECOND, 999);
 
+            DatePickerDialog dialog = new DatePickerDialog(MainActivity.this, (view, year, month, dayOfMonth) -> {
+                selectedDate.set(year, month, dayOfMonth);
+                updateUIForDate();
+            },
+                    selectedDate.get(Calendar.YEAR),
+                    selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DAY_OF_MONTH));
+
+            dialog.getDatePicker().setMaxDate(todayCalendar.getTimeInMillis());
+            dialog.show();
+        });
 
     }
 
@@ -126,229 +133,122 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showDatePicker() {
-        int year = selectedDate.get(Calendar.YEAR);
-        int month = selectedDate.get(Calendar.MONTH);
-        int day = selectedDate.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    selectedDate.set(Calendar.YEAR, selectedYear);
-                    selectedDate.set(Calendar.MONTH, selectedMonth);
-                    selectedDate.set(Calendar.DAY_OF_MONTH, selectedDay);
-
-                    updateDateDisplay();
-                    updateChartAndData();
-                }, year, month, day);
-
-        datePickerDialog.show();
-    }
-
-    private void updateDateDisplay() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-        String formattedDate = dateFormat.format(selectedDate.getTime());
-        selectedDateView.setText(formattedDate);
-    }
-
-    @SuppressLint({"StringFormatInvalid", "DefaultLocale"})
-    private void updateChartAndData() {
-        if (databaseHelper == null) {
-            databaseHelper = new DatabaseHelper(this);
-        }
-        updateDateDisplay();
-
-        int totalSteps = 0;
-        float totalDistance = 0f;
-        float totalCalories = 0f;
-
-        List<BarEntry> entries = new ArrayList<>();
-        List<String> labels = new ArrayList<>();
-
-        Calendar calendar = (Calendar) selectedDate.clone();
-
-        int count;
-        String fromDate = null, toDate = null;
-
-        switch (currentMode) {
-            case DAY:
-                count = 1;
-                fromDate = getDateKey(calendar);
-                toDate = fromDate;
-                break;
-            case WEEK:
-                calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-                count = 7;
-                fromDate = getDateKey(calendar);
-                calendar.add(Calendar.DAY_OF_MONTH, 6);
-                toDate = getDateKey(calendar);
-                break;
-            case MONTH:
-                calendar.set(Calendar.DAY_OF_MONTH, 1);
-                count = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-                fromDate = getDateKey(calendar);
-                calendar.add(Calendar.MONTH, 1);
-                calendar.set(Calendar.DAY_OF_MONTH, 1);
-                toDate = getDateKey(calendar);
-                break;
-            default:
-                count = 1;
-        }
-
-        List<StepData> periodData = databaseHelper.getStepsForPeriod(fromDate, toDate);
-
-        if (currentMode == Mode.DAY) {
-            String dateKey = getDateKey(calendar);
-            for (int hour = 0; hour < 24; hour++) {
-                int hourlySteps = 0;
-                for (StepData data : periodData) {
-                    if (data.getDate().equals(dateKey) && data.getHours() == hour) {
-                        hourlySteps += data.getSteps();
-                    }
-                }
-
-                float distance = hourlySteps * distancePerStep;
-                float calories = hourlySteps * caloriesPerStep;
-
-                entries.add(new BarEntry(hour, hourlySteps));
-                labels.add(String.format("%02d", hour));
-
-                totalSteps += hourlySteps;
-                totalDistance += distance;
-                totalCalories += calories;
-            }
-        } else {
-            for (int i = 0; i < count; i++) {
-                String dateKey = getDateKey(calendar);
-
-                int dailySteps = 0;
-                for (StepData data : periodData) {
-                    if (data.getDate().equals(dateKey)) {
-                        dailySteps += data.getSteps();
-                    }
-                }
-
-                float distance = dailySteps * distancePerStep;
-                float calories = dailySteps * caloriesPerStep;
-
-                entries.add(new BarEntry(i, dailySteps));
-                labels.add(formatDateLabel(calendar));
-
-                totalSteps += dailySteps;
-                totalDistance += distance;
-                totalCalories += calories;
-
-                calendar.add(Calendar.DAY_OF_MONTH, 1);
-            }
-        }
-
-
-        BarDataSet dataSet = new BarDataSet(entries, "Steps");
-
-        dataSet.setColor(Color.rgb(255, 99, 99));
-        dataSet.setDrawValues(false);
-
-        BarData barData = new BarData(dataSet);
-        barChart.setData(barData);
-
-        barChart.setBackgroundColor(Color.TRANSPARENT);
+    private void setupBarChart(int yMax) {
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
         barChart.getDescription().setEnabled(false);
+        barChart.setPinchZoom(false);
+        barChart.setDrawGridBackground(false);
+        barChart.setScaleEnabled(false);
+        barChart.setTouchEnabled(true);
 
         XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
-        xAxis.setTextColor(Color.LTGRAY);
-        xAxis.setAxisLineColor(Color.LTGRAY);
-
-        if (currentMode == Mode.DAY) {
-            xAxis.setValueFormatter(new IndexAxisValueFormatter() {
-                @Override
-                public String getFormattedValue(float value) {
-                    int hour = (int) value;
-                    if (hour % 4 == 0) {
-                        return String.valueOf(hour);
-                    }
-                    return "";
-                }
-            });
-            xAxis.setLabelCount(7, true);
-            xAxis.setGranularity(4f);
-        } else {
-            xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-            xAxis.setLabelCount(Math.min(count, 10), true);
-        }
-
-        // Y-axis configuration
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setTextColor(Color.LTGRAY);
-        leftAxis.setAxisLineColor(Color.TRANSPARENT);
-        leftAxis.setDrawLabels(true);
-        leftAxis.setDrawGridLines(true);
-        leftAxis.setGridColor(Color.parseColor("#444444"));
-
-        leftAxis.setValueFormatter(new ValueFormatter() {
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(6, false);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                if (value >= 1000) {
-                    return String.format("%.0f", value / 1000) + "K";
+                int hour = (int) value;
+                if (hour % 4 == 0 && hour >= 0 && hour <= 24) {
+                    return String.format(Locale.getDefault(), "%02d", hour);
+                } else {
+                    return "";
                 }
-                return String.format("%.0f", value);
             }
         });
 
+        YAxis leftAxis = barChart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(yMax);
+        leftAxis.setGranularity(1000f);
+        leftAxis.setLabelCount((yMax / 1000) + 1, true);
+        leftAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return ((int) value % 1000 == 0) ? String.valueOf((int) value) : "";
+            }
+        });
 
         barChart.getAxisRight().setEnabled(false);
-
         barChart.getLegend().setEnabled(false);
-
-        barChart.setExtraOffsets(10, 10, 10, 10);
-
-        barChart.animateY(500);
-
-        barChart.invalidate();
-
-        stepsView.setText(String.valueOf(totalSteps));
-        distanceView.setText(String.format("%.1f km", totalDistance));
-        caloriesView.setText(String.format("%.0f kcal", totalCalories));
+        barChart.animateY(1000);
     }
 
-    private StepData findStepDataForDate(List<StepData> periodData, String dateKey) {
-        for (StepData data : periodData) {
-            if (data.getDate().equals(dateKey)) {
-                return data;
+    private void showStepsChart(List<StepData> daySteps) {
+        List<BarEntry> entries = new ArrayList<>();
+        float[] hourSteps = new float[24];
+
+        for (StepData data : daySteps) {
+            int hour = data.getHours();
+            if (hour >= 0 && hour < 24) {
+                hourSteps[hour] += data.getSteps();
             }
         }
-        return null;
-    }
 
-    @SuppressLint("DefaultLocale")
-    private List<String> getHourLabels() {
-        List<String> hours = new ArrayList<>();
         for (int i = 0; i < 24; i++) {
-            hours.add(String.format("%02d:00", i));
+            entries.add(new BarEntry(i, hourSteps[i]));
         }
-        return hours;
+
+        float maxSteps = 0;
+        for (float steps : hourSteps) {
+            if (steps > maxSteps) maxSteps = steps;
+        }
+        int yMax = ((int) (maxSteps / 1000) + 1) * 1000;
+
+        setupBarChart(yMax);
+
+        BarDataSet dataSet = new BarDataSet(entries, "Steps per Hour");
+        dataSet.setColor(ContextCompat.getColor(this, R.color.light_brown));
+        barChart.setRenderer(new RoundedBarChartRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler()));
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setValueTextSize(10f);
+        dataSet.setDrawValues(false);
+
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.9f);
+        barChart.setData(barData);
+        barChart.getXAxis().setAxisMinimum(-0.5f);
+        barChart.getXAxis().setAxisMaximum(23.5f);
+        barData.setBarWidth(0.8f);
+        barChart.invalidate();
+
+        StepMarkerView marker = new StepMarkerView(this, R.layout.marker_view);
+        marker.setChartView(barChart);
+        barChart.setMarker(marker);
     }
 
-    @SuppressLint("DefaultLocale")
-    private String getDateKey(Calendar cal) {
-        return String.format("%04d-%02d-%02d",
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH) + 1,
-                cal.get(Calendar.DAY_OF_MONTH));
+
+    @SuppressLint("SetTextI18n")
+    private void updateUIForDate() {
+        String dateStr = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(selectedDate.getTime());
+        selectedDateView.setText(dateStr);
+
+        List<StepData> updatedSteps = databaseHelper.getStepsByDate(dateStr);
+        for (StepData data : updatedSteps) {
+            Log.d("MainActivity", "Hour: " + data.getHours() + ", Steps: " + data.getSteps());
+        }
+        showStepsChart(updatedSteps);
+
+        int totalSteps = 0;
+        for (StepData s : updatedSteps) totalSteps += s.getSteps();
+
+        if (totalSteps == 0) {
+            stepsView.setText("-");
+            distanceView.setText("-");
+            caloriesView.setText("-");
+        } else {
+            distanceView.setText(String.format(Locale.getDefault(), "%.2f km", totalSteps * distancePerStep));
+            caloriesView.setText(String.format(Locale.getDefault(), "%.2f", totalSteps * caloriesPerStep));
+            stepsView.setText(String.valueOf(totalSteps));
+        }
     }
 
-    @SuppressLint("DefaultLocale")
-    private String formatDateLabel(Calendar cal) {
-        return String.format("%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1);
-    }
 
-    private void updateModeUI() {
-        buttonDay.setBackgroundTintList(ContextCompat.getColorStateList(this,
-                currentMode == Mode.DAY ? android.R.color.holo_red_light : android.R.color.darker_gray));
-        buttonWeek.setBackgroundTintList(ContextCompat.getColorStateList(this,
-                currentMode == Mode.WEEK ? android.R.color.holo_red_light : android.R.color.darker_gray));
-        buttonMonth.setBackgroundTintList(ContextCompat.getColorStateList(this,
-                currentMode == Mode.MONTH ? android.R.color.holo_red_light : android.R.color.darker_gray));
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUIForDate();
     }
 }

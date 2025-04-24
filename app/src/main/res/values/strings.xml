@@ -1,5 +1,5 @@
 <resources>
-    <item name="app_name" type="string">Lab4</item>
+    <item name="app_name" type="string">Lab5</item>
     <string name="choose_date">Choose date</string>
     <string name="steps_0">Steps: 0</string>
     <string name="distance_0_m">Distance: 0 m</string>
@@ -8,4 +8,10 @@
     <string name="week">Week</string>
     <string name="month">Month</string>
     <string name="_21_04_2025">21.04.2025</string>
+    <string name="next_day">Next Day</string>
+    <string name="previous_day">Previous Day</string>
+    <string name="_0">0</string>
+    <string name="steps">Steps</string>
+    <string name="distance">Distance</string>
+    <string name="calories">Calories</string>
 </resources>

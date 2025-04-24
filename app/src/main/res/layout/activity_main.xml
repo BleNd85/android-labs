@@ -3,71 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/soft_background"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/selectedDateText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:text="@string/_21_04_2025" />
+    android:padding="16dp">
 
     <LinearLayout
-        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="54dp">
 
-        <Button
-            android:id="@+id/btnDay"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="#75FF4444"
-            android:text="@string/day"
-            android:textColor="@android:color/white" />
+        <ImageButton
+            android:id="@+id/btnPrevDate"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:contentDescription="@string/previous_day"
+            android:rotation="90"
+            android:src="@android:drawable/arrow_down_float"
+            app:tint="@color/dark_brown" />
 
-        <Button
-            android:id="@+id/btnWeek"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/selectedDateText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@android:color/darker_gray"
-            android:text="@string/week"
-            android:textColor="@android:color/white" />
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/_21_04_2025"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btnMonth"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@android:color/darker_gray"
-            android:text="@string/month"
-            android:textColor="@android:color/white" />
+        <ImageButton
+            android:id="@+id/btnNextDate"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:contentDescription="@string/next_day"
+            android:rotation="90"
+            android:src="@android:drawable/arrow_up_float"
+            app:tint="@color/dark_brown" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btnPickDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:text="@string/choose_date"
-        android:backgroundTint="#75FF4444"
-        android:textColor="@android:color/white"/>
-
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
@@ -75,61 +55,107 @@
         android:layout_height="300dp"
         android:layout_marginTop="16dp" />
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
-
-        <TableRow
+        <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
+            android:layout_marginTop="50dp">
 
-            <TextView
-                android:id="@+id/stepsText"
-                android:layout_width="0dp"
+            <TableRow
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/cell_border"
                 android:gravity="center"
-                android:padding="8dp"
-                android:text="@string/steps_0"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                tools:ignore="UselessParent">
 
-            <TextView
-                android:id="@+id/distanceText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/cell_border"
-                android:gravity="center"
-                android:padding="8dp"
-                android:text="@string/distance_0_m"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:translationZ="2dp">
 
-            <TextView
-                android:id="@+id/caloriesText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/cell_border"
-                android:gravity="center"
-                android:padding="8dp"
-                android:text="@string/calories_0"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
-        </TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/steps"
+                        android:textColor="#888"
+                        android:textSize="14sp" />
 
-    </TableLayout>
+                    <TextView
+                        android:id="@+id/stepsText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/steps_0"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:tabIndicatorColor="@android:color/holo_red_light"
-        app:tabSelectedTextColor="@android:color/holo_red_light" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:translationZ="2dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/distance"
+                        android:textColor="#888"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/distanceText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/distance_0_m"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:translationZ="2dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/calories"
+                        android:textColor="#888"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/caloriesText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/calories_0"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
 
 </LinearLayout>
