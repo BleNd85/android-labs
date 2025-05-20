@@ -1,3 +1,32 @@
 <resources>
     <item name="app_name" type="string">Lab6</item>
+    <string name="filters">Фільтри</string>
+    <string name="since">Від</string>
+    <string name="_2025_05_19">2025-05-19</string>
+    <string name="to">До</string>
+    <string name="_2025_10_10">2025-05-19</string>
+    <string name="apply">Застосувати</string>
+    <string name="clean">Очистити</string>
+    <string name="balance">Баланс:</string>
+    <string name="overall">Підсумки</string>
+    <string name="expenses">Витрати:</string>
+    <string name="_0_00">0.00</string>
+    <string name="incomes">Доходи:</string>
+    <string name="no_transactions">Немає транзакцій за вказаний період</string>
+    <string name="show_transactions">Показати транзакції</string>
+    <string name="add_transaction">Додати транзакцію</string>
+    <string name="_1000_00">-1000.00</string>
+    <string name="products_category">Категорія: Продукти</string>
+    <string name="products_supermarket">Купівля продуктів у супермаркеті</string>
+    <string name="edit">Редагувати</string>
+    <string name="delete">Видалити</string>
+    <string name="transaction_details">Новий запис</string>
+    <string name="expense">Витрата</string>
+    <string name="income">Надходження</string>
+    <string name="amount">Сума</string>
+    <string name="description">Опис</string>
+    <string name="category">Категорія</string>
+    <string name="date">Дата</string>
+    <string name="cancel">Скасувати</string>
+    <string name="save">Зберегти</string>
 </resources>
